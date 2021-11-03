@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import listEndpoints from "express-list-endpoints";
 import productsRouter from "./services/products/index.js";
+import reviewsRouter from "./services/reviews/index.js";
 import { connectDB } from "./db/index.js";
 // import models from "./db/models/index.js";
 
@@ -14,6 +15,7 @@ server.use(cors())
 server.use(express.json())
 
 server.use("/products", productsRouter)
+server.use("/reviews", reviewsRouter)
 
 
 console.table(listEndpoints(server))
