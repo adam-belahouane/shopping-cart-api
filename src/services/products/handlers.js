@@ -1,9 +1,13 @@
 import models from "../../db/models/index.js";
+import sequelize from "../../db/index.js";
 const { Product, Review } = models;
 
 const getProducts = async (req, res, next) => {
   try {
-    const products = await Product.findAll({ include: Review });
+    const products = await Product.findAll({ include: Review,
+    order: [
+        ['price', 'DESC'],
+    ] });
     res.send(products);
   } catch (error) {
     next(error);
