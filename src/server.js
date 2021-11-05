@@ -4,6 +4,7 @@ import listEndpoints from "express-list-endpoints";
 import productsRouter from "./services/products/index.js";
 import reviewsRouter from "./services/reviews/index.js";
 import usersRouter from "./services/users/index.js";
+import categoryRouter from "./services/categories/index.js";
 import { connectDB } from "./db/index.js";
 // import models from "./db/models/index.js";
 
@@ -18,6 +19,7 @@ server.use(express.json())
 server.use("/products", productsRouter)
 server.use("/reviews", reviewsRouter)
 server.use("/users", usersRouter)
+server.use("/categories", categoryRouter)
 
 console.table(listEndpoints(server))
 server.listen(PORT, async () => {

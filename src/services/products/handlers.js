@@ -1,13 +1,27 @@
 import models from "../../db/models/index.js";
 import sequelize from "../../db/index.js";
-const { Product, Review } = models;
+const { Product, Review, User, Category, ProductCategory } = models;
 
 const getProducts = async (req, res, next) => {
   try {
-    const products = await Product.findAll({ include: Review,
-    order: [
-        ['price', 'DESC'],
-    ] });
+    const products = await Product.findAll({ 
+      include: [{
+        model: Category, 
+        where: {
+          ...(req.query.category && {
+            name: [req.query.category]
+          })
+
+        },
+        through: { attributes: [] } }, 
+        Review],
+        ...(req.query.size && req.query.page && {
+          limit: req.query.size,
+          offset: parseInt(req.query.size * req.query.page)
+        })
+    // order: [
+    //     ['price', 'DESC'],
+     });
     res.send(products);
   } catch (error) {
     next(error);
@@ -25,7 +39,13 @@ const getProductById = async (req, res, next) => {
 
 const newProduct = async (req, res, next) => {
   try {
-    const data = await Product.create(req.body);
+    const { categories, ...rest } = req.body
+    const data = await Product.create(rest);
+    const valuesToInsert = categories.map((category) => ({
+      categoryId: category,
+      productId:  data.id
+    }))
+    await ProductCategory.bulkCreate(valuesToInsert)
     res.send(data);
   } catch (error) {
     next(error);
